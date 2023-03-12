@@ -1,4 +1,4 @@
-from api import app
+from api import app, api_exception
 from api.functions import download_image, download_video
 from config import PORT
 import os
@@ -10,27 +10,27 @@ import opennsfw2 as n2
 @app.get("/api/image")
 async def detect_nsfw_image(url: str):
     if not url:
-        return {"ERROR": "URL PARAMETER EMPTY"}
+        raise api_exception(status_code=400, detail="Parameter url is empty.")
     image = await download_image(url)
     if not image:
-        return {"ERROR": "IMAGE SIZE TOO LARGE OR INCORRECT URL"}
+        raise api_exception(status_code=404, detail="Image size too large or incorrect URL.")
     probability = None
     try:
         probability = n2.predict_image(image)
     except Exception as e:
         print(e)
     os.remove(image)
-    results = {'probability': probability}
+    results = {'probability': probability, 'file_name': image}
     return results
 
 
 @app.get("/api/video")
 async def detect_nsfw_video(url: str):
     if not url:
-        return {"ERROR": "URL PARAMETER EMPTY"}
+        raise api_exception(status_code=400, detail="Parameter url is empty.")
     video = await download_video(url)
     if not video:
-        return {"ERROR": "VIDEO SIZE TOO LARGE OR INCORRECT URL"}
+        raise api_exception(status_code=404, detail="Video size too large or incorrect URL.")
     elapsed_seconds = None
     nsfw_probabilities = None
     try:
@@ -38,14 +38,14 @@ async def detect_nsfw_video(url: str):
     except Exception as e:
         print(e)
     os.remove(video)
-    results = {'elapsed_seconds': elapsed_seconds, 'nsfw_probabilities': nsfw_probabilities}
+    results = {'elapsed_seconds': elapsed_seconds, 'nsfw_probabilities': nsfw_probabilities, 'file_name': video}
     return results
 
 
 @app.get("/api/video_steam")
 async def detect_nsfw_video_stream(url: str):
     if not url:
-        return {"ERROR": "URL PARAMETER EMPTY"}
+        raise api_exception(status_code=400, detail="Parameter url is empty.")
     elapsed_seconds = None
     nsfw_probabilities = None
     try:
