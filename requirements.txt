@@ -6,3 +6,7 @@ Pillow>=9.0.0
 scikit-image>=0.18.0
 tensorflow>=2.0.0
 tqdm>=4.62
+fastapi
+uvicorn
+aiohttp
+aiofiles
