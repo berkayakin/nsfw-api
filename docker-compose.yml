@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   nsfw_api:
-    container_name: vanilla_nsfw_api
+    container_name: nsfw_api
     build: .
     restart: unless-stopped
     ports:
