@@ -38,7 +38,7 @@ async def detect_nsfw_video(url: str):
     except Exception as e:
         print(e)
     os.remove(video)
-    results = {'elapsed_seconds': elapsed_seconds, 'nsfw_probabilities': nsfw_probabilities, 'file_name': video}
+    results = {'elapsed_seconds': elapsed_seconds, 'probabilities': nsfw_probabilities, 'file_name': video}
     return results
 
 
