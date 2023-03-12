@@ -11,10 +11,4 @@ RUN pip3 install protobuf==3.20.*
 RUN apt-get update -y
 RUN apt install libgl1-mesa-glx -y
 
-COPY . /app/
-
 EXPOSE 8000
-
-ENV PYTHONPATH "${PYTHONPATH}:/app/api"
-
-CMD [ "python3", "api" ]
