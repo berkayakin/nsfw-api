@@ -1,0 +1,12 @@
+version: "1.0"
+
+services:
+  nsfw_api:
+    container_name: vanilla_nsfw_api
+    build: .
+    restart: unless-stopped
+    ports:
+      - "5002:8000"
+    entrypoint: sh /app/entrypoint.sh
+    volumes:
+      - .:/app
