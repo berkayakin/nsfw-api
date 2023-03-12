@@ -42,7 +42,7 @@ async def detect_nsfw_video(url: str):
     return results
 
 
-@app.get("/api/video_steam")
+@app.get("/api/video_stream")
 async def detect_nsfw_video_stream(url: str):
     if not url:
         raise api_exception(status_code=400, detail="Parameter url is empty.")
