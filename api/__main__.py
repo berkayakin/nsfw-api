@@ -12,6 +12,10 @@ import opennsfw2 as n2
 # time, so memory use stays what it was.
 scoring_executor = ThreadPoolExecutor(max_workers=1)
 
+# Built once and reused: rebuilding it per request reallocated the whole network every time,
+# which was slow and pushed the container over its memory limit
+MODEL = n2.make_open_nsfw_model()
+
 
 async def score(fn, *args, **kwargs):
     return await asyncio.get_running_loop().run_in_executor(scoring_executor, lambda: fn(*args, **kwargs))
@@ -23,7 +27,7 @@ async def score(fn, *args, **kwargs):
 async def detect_nsfw_image(url: str):
     image = await download_image(url)
     try:
-        probability = await score(n2.predict_image, image)
+        probability = await score(n2.predict_image, image, model=MODEL)
     except Exception:
         traceback.print_exc()
         raise api_exception(status_code=500, detail="Image scoring failed.")
@@ -36,7 +40,7 @@ async def detect_nsfw_image(url: str):
 async def detect_nsfw_video(url: str):
     video = await download_video(url)
     try:
-        elapsed_seconds, nsfw_probabilities = await score(n2.predict_video_frames, video, progress_bar=False)
+        elapsed_seconds, nsfw_probabilities = await score(n2.predict_video_frames, video, progress_bar=False, model=MODEL)
     except Exception:
         traceback.print_exc()
         raise api_exception(status_code=500, detail="Video scoring failed.")
@@ -52,7 +56,7 @@ async def detect_nsfw_video(url: str):
 async def detect_nsfw_video_stream(url: str):
     validate_url(url)
     try:
-        elapsed_seconds, nsfw_probabilities = await score(n2.predict_video_frames, url, progress_bar=False)
+        elapsed_seconds, nsfw_probabilities = await score(n2.predict_video_frames, url, progress_bar=False, model=MODEL)
     except Exception:
         traceback.print_exc()
         raise api_exception(status_code=500, detail="Video scoring failed.")
