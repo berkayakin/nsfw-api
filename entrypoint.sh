@@ -1,4 +1,4 @@
 #!/bin/sh
+# Dependencies are installed at build time; opennsfw2 and config are imported from /app
 cd /app
-python3 -m pip install .
-python3 -m api
+exec python3 -m api

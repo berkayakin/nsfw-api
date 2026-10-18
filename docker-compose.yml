@@ -6,7 +6,9 @@ services:
     build: .
     restart: unless-stopped
     ports:
-      - "5002:8000"
+      - "127.0.0.1:5002:8000"
     entrypoint: sh /app/entrypoint.sh
     volumes:
       - .:/app
+    environment:
+      NSFW_API_KEY: ${NSFW_API_KEY:?NSFW_API_KEY is not set}

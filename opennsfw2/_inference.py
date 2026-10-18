@@ -181,7 +181,6 @@ def predict_video_frames(
     if video_writer is not None:
         video_writer.release()
     cap.release()
-    cv2.destroyAllWindows()  # pylint: disable=no-member
 
     if pbar is not None:
         pbar.close()
